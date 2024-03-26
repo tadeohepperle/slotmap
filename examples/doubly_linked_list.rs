@@ -1,6 +1,6 @@
 // A simple doubly linked list example using slotmap.
 
-use slotmap::{new_key_type, Key, SlotMap};
+use slotmap_map::{new_key_type, Key, SlotMap};
 
 new_key_type! {
     pub struct ListKey;

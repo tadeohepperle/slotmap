@@ -69,6 +69,24 @@ impl<T> Slot<T> {
             }
         }
     }
+
+    pub fn map<U>(&self, mut map: impl FnMut(&T) -> U) -> Slot<U> {
+        let new_union: SlotUnion<U> = if self.occupied() {
+            let val_ref = unsafe { &*self.u.value };
+            let new_val = map(val_ref);
+            SlotUnion {
+                value: ManuallyDrop::new(new_val),
+            }
+        } else {
+            let next_free = unsafe { self.u.next_free };
+            SlotUnion { next_free }
+        };
+
+        Slot {
+            u: new_union,
+            version: self.version,
+        }
+    }
 }
 
 impl<T> Drop for Slot<T> {
@@ -100,12 +118,12 @@ impl<T: Clone> Clone for Slot<T> {
             (OccupiedMut(self_val), Occupied(source_val)) => self_val.clone_from(source_val),
             (VacantMut(self_next_free), Vacant(&source_next_free)) => {
                 *self_next_free = source_next_free
-            },
+            }
             (_, Occupied(value)) => {
                 self.u = SlotUnion {
                     value: ManuallyDrop::new(value.clone()),
                 }
-            },
+            }
             (_, Vacant(&next_free)) => self.u = SlotUnion { next_free },
         }
         self.version = source.version;
@@ -140,7 +158,7 @@ impl<V> SlotMap<DefaultKey, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm: SlotMap<_, i32> = SlotMap::new();
     /// ```
     pub fn new() -> Self {
@@ -155,7 +173,7 @@ impl<V> SlotMap<DefaultKey, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm: SlotMap<_, i32> = SlotMap::with_capacity(10);
     /// ```
     pub fn with_capacity(capacity: usize) -> Self {
@@ -164,12 +182,24 @@ impl<V> SlotMap<DefaultKey, V> {
 }
 
 impl<K: Key, V> SlotMap<K, V> {
+    /// Maps a SlotMap to a SlotMap with the same key type but a different value type.
+    /// All indices stay the same.
+    pub fn map<T>(&self, mut map: impl FnMut(&V) -> T) -> SlotMap<K, T> {
+        let slots: Vec<Slot<T>> = self.slots.iter().map(|e| e.map(&mut map)).collect();
+        SlotMap {
+            slots,
+            free_head: self.free_head,
+            num_elems: self.num_elems,
+            _k: PhantomData,
+        }
+    }
+
     /// Constructs a new, empty [`SlotMap`] with a custom key type.
     ///
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// new_key_type! {
     ///     struct PositionKey;
     /// }
@@ -188,7 +218,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// new_key_type! {
     ///     struct MessageKey;
     /// }
@@ -221,7 +251,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::with_capacity(10);
     /// sm.insert("len() counts actual elements, not capacity");
     /// let key = sm.insert("removed elements don't count either");
@@ -237,7 +267,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert("dummy");
     /// assert_eq!(sm.is_empty(), false);
@@ -254,7 +284,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let sm: SlotMap<_, f64> = SlotMap::with_capacity(10);
     /// assert_eq!(sm.capacity(), 10);
     /// ```
@@ -274,7 +304,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// sm.insert("foo");
     /// sm.reserve(32);
@@ -293,7 +323,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// sm.insert("foo");
     /// sm.try_reserve(32).unwrap();
@@ -312,7 +342,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert(42);
     /// assert_eq!(sm.contains_key(key), true);
@@ -337,14 +367,17 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert(42);
     /// assert_eq!(sm[key], 42);
     /// ```
     #[inline(always)]
     pub fn insert(&mut self, value: V) -> K {
-        unsafe { self.try_insert_with_key::<_, Never>(move |_| Ok(value)).unwrap_unchecked_() }
+        unsafe {
+            self.try_insert_with_key::<_, Never>(move |_| Ok(value))
+                .unwrap_unchecked_()
+        }
     }
 
     /// Inserts a value given by `f` into the slot map. The key where the
@@ -359,7 +392,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert_with_key(|k| (k, 20));
     /// assert_eq!(sm[key], (key, 20));
@@ -369,7 +402,10 @@ impl<K: Key, V> SlotMap<K, V> {
     where
         F: FnOnce(K) -> V,
     {
-        unsafe { self.try_insert_with_key::<_, Never>(move |k| Ok(f(k))).unwrap_unchecked_() }
+        unsafe {
+            self.try_insert_with_key::<_, Never>(move |k| Ok(f(k)))
+                .unwrap_unchecked_()
+        }
     }
 
     /// Inserts a value given by `f` into the slot map. The key where the
@@ -386,7 +422,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.try_insert_with_key::<_, ()>(|k| Ok((k, 20))).unwrap();
     /// assert_eq!(sm[key], (key, 20));
@@ -459,7 +495,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert(42);
     /// assert_eq!(sm.remove(key), Some(42));
@@ -486,7 +522,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     ///
     /// let k1 = sm.insert(0);
@@ -532,7 +568,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// for i in 0..10 {
     ///     sm.insert(i);
@@ -559,7 +595,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let k = sm.insert(0);
     /// let v: Vec<_> = sm.drain().collect();
@@ -575,7 +611,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert("bar");
     /// assert_eq!(sm.get(key), Some(&"bar"));
@@ -601,7 +637,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert("bar");
     /// assert_eq!(unsafe { sm.get_unchecked(key) }, &"bar");
@@ -618,7 +654,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert(3.5);
     /// if let Some(x) = sm.get_mut(key) {
@@ -645,7 +681,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert("foo");
     /// unsafe { *sm.get_unchecked_mut(key) = "bar" };
@@ -655,7 +691,11 @@ impl<K: Key, V> SlotMap<K, V> {
     /// ```
     pub unsafe fn get_unchecked_mut(&mut self, key: K) -> &mut V {
         debug_assert!(self.contains_key(key));
-        &mut self.slots.get_unchecked_mut(key.data().idx as usize).u.value
+        &mut self
+            .slots
+            .get_unchecked_mut(key.data().idx as usize)
+            .u
+            .value
     }
 
     /// Returns mutable references to the values corresponding to the given
@@ -666,7 +706,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let ka = sm.insert("butter");
     /// let kb = sm.insert("apples");
@@ -733,7 +773,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let ka = sm.insert("butter");
     /// let kb = sm.insert("apples");
@@ -764,7 +804,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let k0 = sm.insert(0);
     /// let k1 = sm.insert(1);
@@ -794,7 +834,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let k0 = sm.insert(10);
     /// let k1 = sm.insert(20);
@@ -830,7 +870,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = SlotMap::new();
     /// let k0 = sm.insert(10);
@@ -853,7 +893,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = SlotMap::new();
     /// let k0 = sm.insert(10);
@@ -876,7 +916,7 @@ impl<K: Key, V> SlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = SlotMap::new();
     /// sm.insert(1);
@@ -1331,6 +1371,19 @@ mod tests {
     use quickcheck::quickcheck;
 
     use super::*;
+
+    #[test]
+    fn check_mapping() {
+        let mut slotmap = SlotMap::<DefaultKey, String>::new();
+        let i1 = slotmap.insert("Hello".to_string());
+        let i2 = slotmap.insert("I".to_string());
+        let i3 = slotmap.insert("Am".to_string());
+        slotmap.remove(i2);
+
+        let mapped = slotmap.map(|e| e.len());
+        let values: Vec<(DefaultKey, usize)> = mapped.into_iter().collect();
+        assert_eq!(values, vec![(i1, 5), (i3, 2)])
+    }
 
     #[derive(Clone)]
     struct CountDrop<'a>(&'a std::cell::RefCell<usize>);

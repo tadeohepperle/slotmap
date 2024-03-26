@@ -101,7 +101,7 @@ impl<T> Slot<T> {
 /// Example usage:
 ///
 /// ```
-/// # use slotmap::*;
+/// # use slotmap-map::*;
 /// let mut players = SlotMap::new();
 /// let mut health = SecondaryMap::new();
 /// let mut ammo = SecondaryMap::new();
@@ -131,7 +131,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sec: SecondaryMap<DefaultKey, i32> = SecondaryMap::new();
     /// ```
     pub fn new() -> Self {
@@ -148,7 +148,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm: SlotMap<_, i32> = SlotMap::with_capacity(10);
     /// let mut sec: SecondaryMap<DefaultKey, i32> = SecondaryMap::with_capacity(sm.capacity());
     /// ```
@@ -167,7 +167,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let k = sm.insert(4);
     /// let mut squared = SecondaryMap::new();
@@ -184,7 +184,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sec: SecondaryMap<DefaultKey, i32> = SecondaryMap::new();
     /// assert!(sec.is_empty());
     /// ```
@@ -198,7 +198,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sec: SecondaryMap<DefaultKey, i32> = SecondaryMap::with_capacity(10);
     /// assert!(sec.capacity() >= 10);
     /// ```
@@ -221,7 +221,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sec: SecondaryMap<DefaultKey, i32> = SecondaryMap::with_capacity(10);
     /// assert!(sec.capacity() >= 10);
     /// sec.set_capacity(1000);
@@ -246,7 +246,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sec: SecondaryMap<DefaultKey, i32> = SecondaryMap::with_capacity(10);
     /// assert!(sec.capacity() >= 10);
     /// sec.try_set_capacity(1000).unwrap();
@@ -269,7 +269,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let k = sm.insert(4);
     /// let mut squared = SecondaryMap::new();
@@ -294,7 +294,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let k = sm.insert(4);
     /// let mut squared = SecondaryMap::new();
@@ -340,7 +340,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut squared = SecondaryMap::new();
     /// let k = sm.insert(4);
@@ -381,7 +381,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -419,7 +419,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     /// for i in 0..10 {
@@ -447,7 +447,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::iter::FromIterator;
     /// let mut sm = SlotMap::new();
     /// let k = sm.insert(0);
@@ -466,7 +466,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert("foo");
     /// let mut sec = SecondaryMap::new();
@@ -494,7 +494,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert("foo");
     /// let mut sec = SecondaryMap::new();
@@ -514,7 +514,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert("test");
     /// let mut sec = SecondaryMap::new();
@@ -543,7 +543,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let key = sm.insert("foo");
     /// let mut sec = SecondaryMap::new();
@@ -567,7 +567,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     /// let ka = sm.insert(()); sec.insert(ka, "butter");
@@ -603,7 +603,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
                     ptrs[i] = MaybeUninit::new(&mut *value);
                     slot_versions[i] = MaybeUninit::new(version.get());
                     *version = NonZeroU32::new(2).unwrap();
-                },
+                }
 
                 _ => break,
             }
@@ -618,7 +618,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
                 match self.slots.get_mut(idx) {
                     Some(Occupied { version, .. }) => {
                         *version = NonZeroU32::new_unchecked(slot_versions[j].assume_init());
-                    },
+                    }
                     _ => unreachable_unchecked(),
                 }
             }
@@ -645,7 +645,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     /// let ka = sm.insert(()); sec.insert(ka, "butter");
@@ -677,7 +677,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     /// let k0 = sm.insert(0); sec.insert(k0, 10);
@@ -706,7 +706,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     /// let k0 = sm.insert(1); sec.insert(k0, 10);
@@ -740,7 +740,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
@@ -764,7 +764,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
@@ -788,7 +788,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
@@ -813,7 +813,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     /// let k = sm.insert(1);
@@ -883,8 +883,11 @@ impl<K: Key, V: PartialEq> PartialEq for SecondaryMap<K, V> {
             return false;
         }
 
-        self.iter()
-            .all(|(key, value)| other.get(key).map_or(false, |other_value| *value == *other_value))
+        self.iter().all(|(key, value)| {
+            other
+                .get(key)
+                .map_or(false, |other_value| *value == *other_value)
+        })
     }
 }
 
@@ -954,7 +957,7 @@ impl<'a, K: Key, V> Entry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -975,7 +978,7 @@ impl<'a, K: Key, V> Entry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -995,7 +998,7 @@ impl<'a, K: Key, V> Entry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec: SecondaryMap<_, ()> = SecondaryMap::new();
     ///
@@ -1016,7 +1019,7 @@ impl<'a, K: Key, V> Entry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -1034,7 +1037,7 @@ impl<'a, K: Key, V> Entry<'a, K, V> {
             Entry::Occupied(mut entry) => {
                 f(entry.get_mut());
                 Entry::Occupied(entry)
-            },
+            }
             Entry::Vacant(entry) => Entry::Vacant(entry),
         }
     }
@@ -1047,7 +1050,7 @@ impl<'a, K: Key, V: Default> Entry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec: SecondaryMap<_, Option<i32>> = SecondaryMap::new();
     ///
@@ -1066,7 +1069,7 @@ impl<'a, K: Key, V> OccupiedEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -1083,8 +1086,8 @@ impl<'a, K: Key, V> OccupiedEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
-    /// # use slotmap::secondary::Entry;
+    /// # use slotmap-map::*;
+    /// # use slotmap-map::secondary::Entry;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -1105,8 +1108,8 @@ impl<'a, K: Key, V> OccupiedEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
-    /// # use slotmap::secondary::Entry;
+    /// # use slotmap-map::*;
+    /// # use slotmap-map::secondary::Entry;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -1129,8 +1132,8 @@ impl<'a, K: Key, V> OccupiedEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
-    /// # use slotmap::secondary::Entry;
+    /// # use slotmap-map::*;
+    /// # use slotmap-map::secondary::Entry;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -1156,8 +1159,8 @@ impl<'a, K: Key, V> OccupiedEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
-    /// # use slotmap::secondary::Entry;
+    /// # use slotmap-map::*;
+    /// # use slotmap-map::secondary::Entry;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -1184,8 +1187,8 @@ impl<'a, K: Key, V> OccupiedEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
-    /// # use slotmap::secondary::Entry;
+    /// # use slotmap-map::*;
+    /// # use slotmap-map::secondary::Entry;
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
     ///
@@ -1207,8 +1210,8 @@ impl<'a, K: Key, V> OccupiedEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
-    /// # use slotmap::secondary::Entry;
+    /// # use slotmap-map::*;
+    /// # use slotmap-map::secondary::Entry;
     ///
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
@@ -1238,8 +1241,8 @@ impl<'a, K: Key, V> VacantEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
-    /// # use slotmap::secondary::Entry;
+    /// # use slotmap-map::*;
+    /// # use slotmap-map::secondary::Entry;
     ///
     /// let mut sm = SlotMap::new();
     /// let mut sec: SecondaryMap<_, ()> = SecondaryMap::new();
@@ -1260,8 +1263,8 @@ impl<'a, K: Key, V> VacantEntry<'a, K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
-    /// # use slotmap::secondary::Entry;
+    /// # use slotmap-map::*;
+    /// # use slotmap-map::secondary::Entry;
     ///
     /// let mut sm = SlotMap::new();
     /// let mut sec = SecondaryMap::new();
@@ -1278,7 +1281,7 @@ impl<'a, K: Key, V> VacantEntry<'a, K, V> {
         // Despite the slot being considered Vacant for this entry, it might be occupied
         // with an outdated element.
         match replace(slot, Slot::new_occupied(self.kd.version.get(), value)) {
-            Occupied { .. } => {},
+            Occupied { .. } => {}
             Vacant => self.map.num_elems += 1,
         }
         unsafe { slot.get_unchecked_mut() }

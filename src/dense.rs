@@ -45,7 +45,7 @@ impl<V> DenseSlotMap<DefaultKey, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm: DenseSlotMap<_, i32> = DenseSlotMap::new();
     /// ```
     pub fn new() -> Self {
@@ -60,7 +60,7 @@ impl<V> DenseSlotMap<DefaultKey, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm: DenseSlotMap<_, i32> = DenseSlotMap::with_capacity(10);
     /// ```
     pub fn with_capacity(capacity: usize) -> DenseSlotMap<DefaultKey, V> {
@@ -74,7 +74,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// new_key_type! {
     ///     struct PositionKey;
     /// }
@@ -93,7 +93,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// new_key_type! {
     ///     struct MessageKey;
     /// }
@@ -126,7 +126,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::with_capacity(10);
     /// sm.insert("len() counts actual elements, not capacity");
     /// let key = sm.insert("removed elements don't count either");
@@ -142,7 +142,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert("dummy");
     /// assert_eq!(sm.is_empty(), false);
@@ -159,7 +159,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let sm: DenseSlotMap<_, f64> = DenseSlotMap::with_capacity(10);
     /// assert_eq!(sm.capacity(), 10);
     /// ```
@@ -178,7 +178,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// sm.insert("foo");
     /// sm.reserve(32);
@@ -199,7 +199,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// sm.insert("foo");
     /// sm.try_reserve(32).unwrap();
@@ -220,7 +220,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert(42);
     /// assert_eq!(sm.contains_key(key), true);
@@ -245,14 +245,17 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert(42);
     /// assert_eq!(sm[key], 42);
     /// ```
     #[inline(always)]
     pub fn insert(&mut self, value: V) -> K {
-        unsafe { self.try_insert_with_key::<_, Never>(move |_| Ok(value)).unwrap_unchecked_() }
+        unsafe {
+            self.try_insert_with_key::<_, Never>(move |_| Ok(value))
+                .unwrap_unchecked_()
+        }
     }
 
     /// Inserts a value given by `f` into the slot map. The key where the
@@ -267,7 +270,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert_with_key(|k| (k, 20));
     /// assert_eq!(sm[key], (key, 20));
@@ -277,7 +280,10 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     where
         F: FnOnce(K) -> V,
     {
-        unsafe { self.try_insert_with_key::<_, Never>(move |k| Ok(f(k))).unwrap_unchecked_() }
+        unsafe {
+            self.try_insert_with_key::<_, Never>(move |k| Ok(f(k)))
+                .unwrap_unchecked_()
+        }
     }
 
     /// Inserts a value given by `f` into the slot map. The key where the
@@ -294,7 +300,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.try_insert_with_key::<_, ()>(|k| Ok((k, 20))).unwrap();
     /// assert_eq!(sm[key], (key, 20));
@@ -372,7 +378,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert(42);
     /// assert_eq!(sm.remove(key), Some(42));
@@ -395,7 +401,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     ///
     /// let k3 = sm.insert(2);
@@ -436,7 +442,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// for i in 0..10 {
     ///     sm.insert(i);
@@ -460,7 +466,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let k = sm.insert(0);
     /// let v: Vec<_> = sm.drain().collect();
@@ -476,7 +482,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert("bar");
     /// assert_eq!(sm.get(key), Some(&"bar"));
@@ -506,7 +512,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert("bar");
     /// assert_eq!(unsafe { sm.get_unchecked(key) }, &"bar");
@@ -515,7 +521,10 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// ```
     pub unsafe fn get_unchecked(&self, key: K) -> &V {
         debug_assert!(self.contains_key(key));
-        let idx = self.slots.get_unchecked(key.data().idx as usize).idx_or_free;
+        let idx = self
+            .slots
+            .get_unchecked(key.data().idx as usize)
+            .idx_or_free;
         &self.values.get_unchecked(idx as usize)
     }
 
@@ -524,7 +533,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert(3.5);
     /// if let Some(x) = sm.get_mut(key) {
@@ -555,7 +564,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let key = sm.insert("foo");
     /// unsafe { *sm.get_unchecked_mut(key) = "bar" };
@@ -565,7 +574,10 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// ```
     pub unsafe fn get_unchecked_mut(&mut self, key: K) -> &mut V {
         debug_assert!(self.contains_key(key));
-        let idx = self.slots.get_unchecked(key.data().idx as usize).idx_or_free;
+        let idx = self
+            .slots
+            .get_unchecked(key.data().idx as usize)
+            .idx_or_free;
         self.values.get_unchecked_mut(idx as usize)
     }
 
@@ -578,7 +590,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let ka = sm.insert("butter");
     /// let kb = sm.insert("apples");
@@ -647,7 +659,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let ka = sm.insert("butter");
     /// let kb = sm.insert("apples");
@@ -675,7 +687,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let k0 = sm.insert(0);
     /// let k1 = sm.insert(1);
@@ -700,7 +712,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = DenseSlotMap::new();
     /// let k0 = sm.insert(10);
     /// let k1 = sm.insert(20);
@@ -729,7 +741,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = DenseSlotMap::new();
     /// let k0 = sm.insert(10);
@@ -749,7 +761,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = DenseSlotMap::new();
     /// let k0 = sm.insert(10);
@@ -769,7 +781,7 @@ impl<K: Key, V> DenseSlotMap<K, V> {
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// # use std::collections::HashSet;
     /// let mut sm = DenseSlotMap::new();
     /// sm.insert(1);
@@ -1132,7 +1144,10 @@ mod serialize {
             }
 
             // Ensure the first slot exists and is empty for the sentinel.
-            if serde_slots.get(0).map_or(true, |slot| slot.version % 2 == 1) {
+            if serde_slots
+                .get(0)
+                .map_or(true, |slot| slot.version % 2 == 1)
+            {
                 return Err(de::Error::custom(&"first slot not empty"));
             }
 

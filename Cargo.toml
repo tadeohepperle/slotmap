@@ -1,11 +1,11 @@
 [package]
-name = "slotmap"
-version = "1.0.7"  # Remember to grep and update version everywhere.
+name = "slotmap-map"
+version = "1.0.7"                                                    # Remember to grep and update version everywhere.
 edition = "2018"
-authors = ["Orson Peters <orsonpeters@gmail.com>"]
+authors = ["Orson Peters <orsonpeters@gmail.com>", "Tadeo Hepperle"]
 description = "Slotmap data structure"
 license = "Zlib"
-repository = "https://github.com/orlp/slotmap"
+repository = "https://github.com/tadeohepperle/slotmap-map"
 readme = "README.md"
 keywords = ["slotmap", "storage", "allocator", "arena", "reference"]
 categories = ["data-structures", "memory-management", "caching"]

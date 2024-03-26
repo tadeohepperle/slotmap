@@ -1,5 +1,5 @@
 #![doc(html_root_url = "https://docs.rs/slotmap/1.0.7")]
-#![crate_name = "slotmap"]
+#![crate_name = "slotmap_map"]
 #![cfg_attr(all(nightly, feature = "unstable"), feature(try_reserve))]
 #![cfg_attr(all(not(test), not(feature = "std")), no_std)]
 #![cfg_attr(all(nightly, doc), feature(doc_cfg))]
@@ -57,7 +57,7 @@
 //! # Examples
 //!
 //! ```
-//! # use slotmap::*;
+//! # use slotmap-map::*;
 //! let mut sm = SlotMap::new();
 //! let foo = sm.insert("foo");  // Key generated on insert.
 //! let bar = sm.insert("bar");
@@ -186,7 +186,7 @@
 //! would use:
 //!
 //! ```
-//! # use slotmap::*;
+//! # use slotmap-map::*;
 //! # #[derive(Copy, Clone)]
 //! # struct Player;
 //! new_key_type! { struct PlayerKey; }
@@ -208,10 +208,10 @@ extern crate alloc;
 // So our macros can refer to these.
 #[doc(hidden)]
 pub mod __impl {
-    #[cfg(feature = "serde")]
-    pub use serde::{Deserialize, Deserializer, Serialize, Serializer};
     pub use core::convert::From;
     pub use core::result::Result;
+    #[cfg(feature = "serde")]
+    pub use serde::{Deserialize, Deserializer, Serialize, Serializer};
 }
 
 pub mod basic;
@@ -319,8 +319,7 @@ impl Default for KeyData {
     }
 }
 
-impl Hash for KeyData
-{
+impl Hash for KeyData {
     fn hash<H: Hasher>(&self, state: &mut H) {
         // A derived Hash impl would call write_u32 twice. We call write_u64
         // once, which is beneficial if the hasher implements write_u64
@@ -367,7 +366,7 @@ pub unsafe trait Key:
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// let mut sm = SlotMap::new();
     /// let k = sm.insert(42);
     /// let nk = DefaultKey::null();
@@ -385,7 +384,7 @@ pub unsafe trait Key:
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// new_key_type! { struct MyKey; }
     /// let a = MyKey::null();
     /// let b = MyKey::default();
@@ -401,7 +400,7 @@ pub unsafe trait Key:
     /// # Examples
     ///
     /// ```
-    /// # use slotmap::*;
+    /// # use slotmap-map::*;
     /// new_key_type! { struct MyKey; }
     /// let dk = DefaultKey::null();
     /// let mk = MyKey::null();
@@ -421,7 +420,7 @@ pub unsafe trait Key:
 ///
 /// ```
 /// # extern crate slotmap;
-/// # use slotmap::*;
+/// # use slotmap-map::*;
 /// new_key_type! {
 ///     // A private key type.
 ///     struct RocketKey;
@@ -572,12 +571,12 @@ mod tests {
         use super::new_key_type;
 
         // Clobber namespace with clashing names - should still work.
-        trait Serialize { }
-        trait Deserialize { }
-        trait Serializer { }
-        trait Deserializer { }
-        trait Key { }
-        trait From { }
+        trait Serialize {}
+        trait Deserialize {}
+        trait Serializer {}
+        trait Deserializer {}
+        trait Key {}
+        trait From {}
         struct Result;
         struct KeyData;
 

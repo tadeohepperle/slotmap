@@ -1,7 +1,7 @@
 // Randomized meldable heap.
 // https://en.wikipedia.org/wiki/Randomized_meldable_heap
 
-use slotmap::{new_key_type, Key, SlotMap};
+use slotmap_map::{new_key_type, Key, SlotMap};
 
 new_key_type! {
     struct HeapKey;
